@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <!-- Content Security Policy (Organizational Hardening) -->
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://*.googleusercontent.com; connect-src 'self' https://generativelanguage.googleapis.com; worker-src 'self' blob:;">
+
+  <!-- Primary Meta Tags -->
+  <title>KalpanaForge - Create Stunning Text Behind Image Effects</title>
+  <meta name="title" content="KalpanaForge - Create Stunning Text Behind Image Effects" />
+  <meta name="description"
+    content="Create viral social media content with professional depth effects. AI-powered masking, 2500+ fonts, and one-click styling presets. Free online Design Forge." />
+  <meta name="keywords"
+    content="text behind image, depth effect, typography, social media design, AI image editor, font overlay, graphic design tool, KalpanaForge" />
+  <meta name="author" content="KalpanaForge" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://kalpanaforge.com/" />
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://kalpanaforge.com/" />
+  <meta property="og:title" content="KalpanaForge - Create Stunning Text Behind Image Effects" />
+  <meta property="og:description"
+    content="Create viral social media content with professional depth effects. AI-powered masking, 2500+ fonts, and one-click styling presets." />
+  <meta property="og:image" content="https://kalpanaforge.com/og-image.png" />
+  <meta property="og:site_name" content="KalpanaForge" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://kalpanaforge.com/" />
+  <meta name="twitter:title" content="KalpanaForge - Create Stunning Text Behind Image Effects" />
+  <meta name="twitter:description"
+    content="Create viral social media content with professional depth effects. AI-powered masking, 2500+ fonts, and one-click styling presets." />
+  <meta name="twitter:image" content="https://kalpanaforge.com/og-image.png" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="/assets/kf_logo_v2.jpg" />
+
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#194BFE" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Inter:wght@300;400;900&family=Montserrat:wght@400;900&display=swap"
+    rel="stylesheet">
+
+  <!-- Extensive Font List for Editor -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Alfa+Slab+One&family=Amatic+SC:wght@400;700&family=Anton&family=Bangers&family=Bebas+Neue&family=Black+Ops+One&family=Bungee+Shade&family=Cinzel:wght@400;700&family=Comfortaa:wght@300;700&family=Creepster&family=Dancing+Script:wght@400;700&family=DM+Serif+Display&family=Exo+2:wght@300;900&family=Fjalla+One&family=Fredoka+One&family=Gloria+Hallelujah&family=Great+Vibes&family=Indie+Flower&family=Lobster&family=Monoton&family=Orbitron:wght@400;900&family=Oswald:wght@400;700&family=Pacifico&family=Permanent+Marker&family=Playfair+Display:wght@400;900&family=Poiret+One&family=Press+Start+2P&family=Raleway:wght@300;900&family=Righteous&family=Rubik+Mono+One&family=Russo+One&family=Sacramento&family=Shadows+Into+Light&family=Special+Elite&family=Syncopate:wght@400;700&family=Ultra&family=Unica+One&family=Vampiro+One&family=Vollkorn:wght@400;900&display=swap"
+    rel="stylesheet">
+
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: 'var(--background)',
+            surface: 'var(--surface)',
+            surfaceHighlight: 'var(--surface-highlight)',
+            textPrimary: 'var(--text-primary)',
+            textSecondary: 'var(--text-secondary)',
+            border: 'var(--border)',
+
+            // New Identity Colors
+            primary: 'var(--primary)',
+            primaryDark: 'var(--primary-dark)',
+            secondary: 'var(--secondary)',
+            accent: 'var(--accent)',
+          },
+          fontFamily: {
+            sans: ['Manrope', 'sans-serif'],
+            display: ['Manrope', 'sans-serif'],
+          },
+          animation: {
+            'blob': 'blob 7s infinite',
+            'float': 'float 6s ease-in-out infinite',
+          },
+          keyframes: {
+            blob: {
+              '0%': { transform: 'translate(0px, 0px) scale(1)' },
+              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+              '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-20px)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Styles -->
+  <style>
+    :root {
+      --background: #f8f8f8;
+      --surface: #ffffff;
+      --surface-highlight: #f3f4f6;
+      --text-primary: #000000;
+      --text-secondary: #71717a;
+      --border: #e4e4e7;
+      --primary: #194BFE;
+      --primary-dark: #1030b0;
+      --secondary: #FF6B35;
+      --accent: #8b5cf6;
+    }
+
+    .dark {
+      --background: #09090b;
+      --surface: #18181b;
+      --surface-highlight: #27272a;
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --border: #27272a;
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --secondary: #fb923c;
+      --accent: #a78bfa;
+    }
+
+    body {
+      background-color: var(--background);
+      background-image:
+        radial-gradient(at 0% 0%, rgba(25, 75, 254, 0.03) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(255, 107, 53, 0.03) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.03) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-primary);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      overscroll-behavior: none;
+    }
+
+    /* Smooth Scrolling */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #d4d4d8;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a1a1aa;
+    }
+
+    /* Glassmorphism Utilities */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+
+    /* Editor Canvas Grid - Kept Dark for Contrast */
+    .canvas-grid {
+      background-size: 40px 40px;
+      background-color: #18181b;
+      /* Zinc-900 */
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    canvas:active {
+      cursor: grabbing;
+    }
+
+    /* 3D Glassmorphism Bubbles */
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      box-shadow:
+        inset 10px 10px 20px rgba(255, 255, 255, 0.2),
+        inset -10px -10px 20px rgba(0, 0, 0, 0.1),
+        10px 20px 30px rgba(0, 0, 0, 0.1);
+      opacity: 0.8;
+      z-index: 0;
+    }
+
+    .bubble-primary {
+      background: radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.4), rgba(59, 130, 246, 0.1));
+      box-shadow:
+        inset 20px 20px 40px rgba(255, 255, 255, 0.4),
+        inset -20px -20px 40px rgba(25, 75, 254, 0.2),
+        20px 40px 50px rgba(25, 75, 254, 0.2);
+    }
+
+    .bubble-secondary {
+      background: radial-gradient(circle at 30% 30%, rgba(255, 107, 53, 0.4), rgba(255, 107, 53, 0.1));
+      box-shadow:
+        inset 20px 20px 40px rgba(255, 255, 255, 0.4),
+        inset -20px -20px 40px rgba(255, 107, 53, 0.2),
+        20px 40px 50px rgba(255, 107, 53, 0.2);
+    }
+
+    .bubble-accent {
+      background: radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.4), rgba(139, 92, 246, 0.1));
+      box-shadow:
+        inset 20px 20px 40px rgba(255, 255, 255, 0.4),
+        inset -20px -20px 40px rgba(139, 92, 246, 0.2),
+        20px 40px 50px rgba(139, 92, 246, 0.2);
+    }
+
+    @keyframes float-slow {
+
+      0%,
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(-30px) rotate(5deg);
+      }
+    }
+
+    @keyframes float-medium {
+
+      0%,
+      100% {
+        transform: translateY(0) scale(1);
+      }
+
+      50% {
+        transform: translateY(-50px) scale(1.05);
+      }
+    }
+
+    @keyframes float-fast {
+
+      0%,
+      100% {
+        transform: translateY(0) translateX(0);
+      }
+
+      33% {
+        transform: translateY(-40px) translateX(20px);
+      }
+
+      66% {
+        transform: translateY(-20px) translateX(-20px);
+      }
+    }
+
+    .animate-float-slow {
+      animation: float-slow 12s ease-in-out infinite;
+    }
+
+    .animate-float-medium {
+      animation: float-medium 9s ease-in-out infinite;
+    }
+
+    .animate-float-fast {
+      animation: float-fast 7s ease-in-out infinite;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
+</html>
