@@ -231,29 +231,31 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
                         />
                     )}
 
-                    {/* MRX SUPREME SECTION */}
-                    <div className="pt-6 border-t border-white/5">
-                        <div className="bg-primary/5 rounded-2xl p-6 border border-primary/20 relative overflow-hidden group/mrx">
-                            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover/mrx:opacity-100 transition-opacity" />
-                            <div className="relative z-10 flex items-center justify-between gap-4">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary animate-pulse">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+                    {/* MRX SUPREME SECTION - DEV ONLY */}
+                    {import.meta.env.DEV && (
+                        <div className="pt-6 border-t border-white/5">
+                            <div className="bg-primary/5 rounded-2xl p-6 border border-primary/20 relative overflow-hidden group/mrx">
+                                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover/mrx:opacity-100 transition-opacity" />
+                                <div className="relative z-10 flex items-center justify-between gap-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary animate-pulse">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+                                        </div>
+                                        <div className="leading-tight">
+                                            <h5 className="text-[10px] font-black text-white uppercase tracking-widest">Mr. X Pulse</h5>
+                                            <p className="text-[8px] font-bold text-zinc-500 uppercase tracking-tighter">Supreme Guardian Active</p>
+                                        </div>
                                     </div>
-                                    <div className="leading-tight">
-                                        <h5 className="text-[10px] font-black text-white uppercase tracking-widest">Mr. X Pulse</h5>
-                                        <p className="text-[8px] font-bold text-zinc-500 uppercase tracking-tighter">Supreme Guardian Active</p>
-                                    </div>
+                                    <button
+                                        onClick={props.onMedicate}
+                                        className="px-4 py-2 bg-white text-black text-[9px] font-black uppercase rounded-full hover:bg-primary hover:text-white transition-all shadow-lg active:scale-95"
+                                    >
+                                        Apply Medication 💊
+                                    </button>
                                 </div>
-                                <button
-                                    onClick={props.onMedicate}
-                                    className="px-4 py-2 bg-white text-black text-[9px] font-black uppercase rounded-full hover:bg-primary hover:text-white transition-all shadow-lg active:scale-95"
-                                >
-                                    Apply Medication 💊
-                                </button>
                             </div>
                         </div>
-                    </div>
+                    )}
 
                 </AnimatePresence>
             </div>
