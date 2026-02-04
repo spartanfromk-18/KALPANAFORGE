@@ -13,6 +13,7 @@ import { Terms } from './components/Terms';
 import { Showcase } from './components/Showcase';
 import { AppState } from './types';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { Footer } from './components/Footer';
 
 // Lazy load the heavy Editor component
 const Editor = lazy(() => import('./components/Editor.tsx').then(module => ({ default: module.Editor })));
@@ -176,6 +177,7 @@ const App: React.FC = () => {
           )}
         </main>
 
+        <Footer />
       </div>
     </ErrorBoundary>
   );
