@@ -1,4 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
+import { scanForThreats } from "../services/mrx/core";
 
 export const config = {
     runtime: 'edge',
@@ -27,6 +28,19 @@ export default async function handler(req: Request) {
 
     try {
         const body = await req.json();
+
+        // --- MR. X SECURITY LAYER (Layer 3) ---
+        const scanResult = scanForThreats(body);
+        if (scanResult.isThreat) {
+            return new Response(JSON.stringify({
+                error: 'Security threat detected',
+                threats: scanResult.threats
+            }), {
+                status: 403,
+                headers: corsHeaders
+            });
+        }
+
         const { imageContext } = body;
 
         // --- ROBUST VALIDATION (Server-Side) ---

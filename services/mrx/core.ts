@@ -96,43 +96,53 @@ const THREAT_PATTERNS = {
 };
 
 export function scanForThreats(payload: any): ThreatScanResult {
-    const threats: string[] = [];
-    const blockedPatterns: string[] = [];
-    let maxSeverity: 'low' | 'medium' | 'high' | 'critical' = 'low';
+    try {
+        const threats: string[] = [];
+        const blockedPatterns: string[] = [];
+        let maxSeverity: 'low' | 'medium' | 'high' | 'critical' = 'low';
 
-    const scanText = typeof payload === 'string' ? payload : JSON.stringify(payload);
+        const scanText = typeof payload === 'string' ? payload : JSON.stringify(payload);
 
-    const scanCategory = (patterns: RegExp[], category: string, severity: 'low' | 'medium' | 'high' | 'critical') => {
-        for (const pattern of patterns) {
-            pattern.lastIndex = 0;
-            if (pattern.test(scanText)) {
-                threats.push(category);
-                blockedPatterns.push(pattern.source);
-                const severityLevels = { low: 1, medium: 2, high: 3, critical: 4 };
-                if (severityLevels[severity] > severityLevels[maxSeverity]) {
-                    maxSeverity = severity;
+        const scanCategory = (patterns: RegExp[], category: string, severity: 'low' | 'medium' | 'high' | 'critical') => {
+            for (const pattern of patterns) {
+                pattern.lastIndex = 0;
+                if (pattern.test(scanText)) {
+                    threats.push(category);
+                    blockedPatterns.push(pattern.source);
+                    const severityLevels = { low: 1, medium: 2, high: 3, critical: 4 };
+                    if (severityLevels[severity] > severityLevels[maxSeverity]) {
+                        maxSeverity = severity;
+                    }
+                    break;
                 }
-                break;
             }
-        }
-    };
+        };
 
-    scanCategory(THREAT_PATTERNS.xss, 'XSS Attack', 'critical');
-    scanCategory(THREAT_PATTERNS.sqlInjection, 'SQL Injection', 'critical');
-    scanCategory(THREAT_PATTERNS.commandInjection, 'Command Injection', 'critical');
-    scanCategory(THREAT_PATTERNS.pathTraversal, 'Path Traversal', 'high');
-    scanCategory(THREAT_PATTERNS.noSqlInjection, 'NoSQL Injection', 'high');
-    scanCategory(THREAT_PATTERNS.prototypePollution, 'Prototype Pollution', 'high');
-    scanCategory(THREAT_PATTERNS.templateInjection, 'Template Injection', 'high');
-    scanCategory(THREAT_PATTERNS.ssrf, 'SSRF Attack', 'high');
-    scanCategory(THREAT_PATTERNS.ldapInjection, 'LDAP Injection', 'medium');
+        scanCategory(THREAT_PATTERNS.xss, 'XSS Attack', 'critical');
+        scanCategory(THREAT_PATTERNS.sqlInjection, 'SQL Injection', 'critical');
+        scanCategory(THREAT_PATTERNS.commandInjection, 'Command Injection', 'critical');
+        scanCategory(THREAT_PATTERNS.pathTraversal, 'Path Traversal', 'high');
+        scanCategory(THREAT_PATTERNS.noSqlInjection, 'NoSQL Injection', 'high');
+        scanCategory(THREAT_PATTERNS.prototypePollution, 'Prototype Pollution', 'high');
+        scanCategory(THREAT_PATTERNS.templateInjection, 'Template Injection', 'high');
+        scanCategory(THREAT_PATTERNS.ssrf, 'SSRF Attack', 'high');
+        scanCategory(THREAT_PATTERNS.ldapInjection, 'LDAP Injection', 'medium');
 
-    return {
-        isThreat: threats.length > 0,
-        threats: [...new Set(threats)],
-        severity: threats.length > 0 ? maxSeverity : 'low',
-        blockedPatterns,
-    };
+        return {
+            isThreat: threats.length > 0,
+            threats: [...new Set(threats)],
+            severity: threats.length > 0 ? maxSeverity : 'low',
+            blockedPatterns,
+        };
+    } catch (e) {
+        // FAIL CLOSED: If scanning fails, treat as a critical threat
+        return {
+            isThreat: true,
+            threats: ['Scanner Error'],
+            severity: 'critical',
+            blockedPatterns: [],
+        };
+    }
 }
 
 export function sanitize(input: string, options: SanitizeOptions = { mode: 'standard' }): string {

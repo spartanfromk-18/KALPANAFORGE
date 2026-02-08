@@ -156,36 +156,42 @@ export const mrxService = {
     },
 
     auditAction: (action: string, payload: any): { allowed: boolean; scanResult?: ThreatScanResult } => {
-        const quickCheck = typeof payload === 'string' && quickThreatCheck(payload);
+        try {
+            const quickCheck = typeof payload === 'string' && quickThreatCheck(payload);
 
-        if (quickCheck && securityConfig.supremeMode) {
-            mrxService.saveLog({
-                timestamp: Date.now(),
-                event: 'SECURITY_THREAT_NEUTRALIZED',
-                type: 'SECURITY',
-                severity: 'CRITICAL',
-                message: `⚠️ SUPREME MODE: Malicious pattern detected in [${action}]. BLOCKED.`,
-                metadata: { action, threatType: 'Quick Scan' }
-            });
+            if (quickCheck && securityConfig.supremeMode) {
+                mrxService.saveLog({
+                    timestamp: Date.now(),
+                    event: 'SECURITY_THREAT_NEUTRALIZED',
+                    type: 'SECURITY',
+                    severity: 'CRITICAL',
+                    message: `⚠️ SUPREME MODE: Malicious pattern detected in [${action}]. BLOCKED.`,
+                    metadata: { action, threatType: 'Quick Scan' }
+                });
+                return { allowed: false };
+            }
+
+            const scanResult = scanForThreats(payload);
+
+            if (scanResult.isThreat) {
+                mrxService.saveLog({
+                    timestamp: Date.now(),
+                    event: 'SECURITY_THREAT_NEUTRALIZED',
+                    type: 'SECURITY',
+                    severity: scanResult.severity.toUpperCase() as any,
+                    message: `🛡️ ${securityConfig.supremeMode ? 'SUPREME MODE' : 'Standard'}: ${scanResult.threats.join(', ')} detected in [${action}]. ${securityConfig.blockOnThreat ? 'BLOCKED' : 'LOGGED'}.`,
+                    metadata: { action, threats: scanResult.threats }
+                });
+
+                if (securityConfig.blockOnThreat) return { allowed: false, scanResult };
+            }
+
+            return { allowed: true, scanResult };
+        } catch (e) {
+            console.error('[MR. X] Audit failure', e);
+            // FAIL CLOSED
             return { allowed: false };
         }
-
-        const scanResult = scanForThreats(payload);
-
-        if (scanResult.isThreat) {
-            mrxService.saveLog({
-                timestamp: Date.now(),
-                event: 'SECURITY_THREAT_NEUTRALIZED',
-                type: 'SECURITY',
-                severity: scanResult.severity.toUpperCase() as any,
-                message: `🛡️ ${securityConfig.supremeMode ? 'SUPREME MODE' : 'Standard'}: ${scanResult.threats.join(', ')} detected in [${action}]. ${securityConfig.blockOnThreat ? 'BLOCKED' : 'LOGGED'}.`,
-                metadata: { action, threats: scanResult.threats }
-            });
-
-            if (securityConfig.blockOnThreat) return { allowed: false, scanResult };
-        }
-
-        return { allowed: true, scanResult };
     },
 
     sanitizeInput: (input: string): string => sanitize(input, {
