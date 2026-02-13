@@ -13,7 +13,7 @@ Your application is a **Vite + React** app with serverless API functions, optimi
 ---
 
 ## Step 1: Prepare Your Code
-
+npm
 ### Verify Build Locally
 ```bash
 npm install
