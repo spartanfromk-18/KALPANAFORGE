@@ -89,7 +89,7 @@ export const Gallery: React.FC<GalleryProps> = ({ onOpenAuth }) => {
 
 const PreLoginView: React.FC<{ onOpenAuth: () => void }> = ({ onOpenAuth }) => {
     return (
-        <div className="fixed inset-0 bg-[#020617] overflow-hidden flex items-center justify-center">
+        <div className="relative w-full min-h-screen bg-[#020617] overflow-hidden flex flex-col items-center justify-center pt-24 pb-16">
             {/* BACKGROUND ANTARCTICA */}
             <div className="absolute inset-0 z-0">
                 <img src="/assets/demo_mountains.png" className="w-full h-full object-cover opacity-40 blur-sm" alt="Antarctica" />
