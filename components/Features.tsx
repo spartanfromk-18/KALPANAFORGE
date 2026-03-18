@@ -121,7 +121,7 @@ export const Features: React.FC = () => {
 
     return (
         <div ref={containerRef} className="bg-black text-white selection:bg-primary selection:text-white">
-            {/* Epic Sticky Background */}
+            {/* Epic Sticky Background with Rotating Circles */}
             <motion.div
                 style={{ opacity: bgOpacity }}
                 className="fixed inset-0 pointer-events-none z-0"

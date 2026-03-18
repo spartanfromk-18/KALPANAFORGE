@@ -11,20 +11,29 @@ export const Landing: React.FC<LandingProps> = ({ setAppState }) => {
   return (
     <div className="min-h-screen w-full relative bg-background overflow-x-hidden selection:bg-primary selection:text-white pb-32">
 
-      {/* Animated Background 3D Bubbles */}
+      {/* Rotating Circle Digital Transitions — White Mode */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        {/* Top Right - Primary Blue */}
-        <div className="absolute top-[-5%] right-[-5%] w-[500px] h-[500px] bubble bubble-primary animate-float-slow opacity-60" />
+        {/* Rotating Geometric Circles */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+          className="absolute top-[-20%] right-[-15%] w-[80vw] h-[80vw] max-w-[900px] max-h-[900px] border border-primary/[0.07] rounded-[35%] opacity-40"
+        />
+        <motion.div
+          animate={{ rotate: -360 }}
+          transition={{ duration: 90, repeat: Infinity, ease: "linear" }}
+          className="absolute bottom-[-25%] left-[-15%] w-[70vw] h-[70vw] max-w-[800px] max-h-[800px] border border-accent/[0.06] rounded-[40%] opacity-30"
+        />
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
+          className="absolute top-[10%] left-[50%] -translate-x-1/2 w-[60vw] h-[60vw] max-w-[700px] max-h-[700px] border-[0.5px] border-secondary/[0.05] rounded-[30%] opacity-25"
+        />
 
-        {/* Middle Left - Secondary Orange */}
-        <div className="absolute top-[30%] left-[-10%] w-[400px] h-[400px] bubble bubble-secondary animate-float-medium opacity-50 animation-delay-2000" />
-
-        {/* Bottom Right - Accent Purple */}
-        <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bubble bubble-accent animate-float-fast opacity-40 animation-delay-4000" />
-
-        {/* Tiny Floating Particles */}
-        <div className="absolute top-[20%] right-[20%] w-[100px] h-[100px] bubble bubble-primary animate-float-fast opacity-30 blur-[1px]" />
-        <div className="absolute bottom-[20%] left-[20%] w-[150px] h-[150px] bubble bubble-accent animate-float-slow opacity-20 blur-[2px]" />
+        {/* Subtle 3D Bubbles */}
+        <div className="absolute top-[-5%] right-[-5%] w-[300px] h-[300px] bubble bubble-primary animate-float-slow opacity-25" />
+        <div className="absolute top-[30%] left-[-10%] w-[250px] h-[250px] bubble bubble-secondary animate-float-medium opacity-20 animation-delay-2000" />
+        <div className="absolute bottom-[-10%] right-[10%] w-[350px] h-[350px] bubble bubble-accent animate-float-fast opacity-15 animation-delay-4000" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10 pt-24 md:pt-32 lg:pt-48">
@@ -81,7 +90,7 @@ export const Landing: React.FC<LandingProps> = ({ setAppState }) => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setAppState(AppState.GALLERY)}
-              className="w-full sm:w-auto px-10 py-5 bg-white/5 backdrop-blur-xl border border-white/20 text-white font-black uppercase tracking-[0.2em] rounded-full hover:bg-white/10 transition-all duration-300"
+              className="w-full sm:w-auto px-10 py-5 bg-surface/60 backdrop-blur-xl border border-border text-textPrimary font-black uppercase tracking-[0.2em] rounded-full hover:bg-primary hover:text-white transition-all duration-300"
             >
               View Gallery
             </motion.button>
@@ -146,8 +155,11 @@ export const Landing: React.FC<LandingProps> = ({ setAppState }) => {
           </div>
         </div>
 
+        {/* Smooth Transition into Footer */}
+        <div className="mt-32 h-32 bg-gradient-to-b from-transparent via-zinc-900/30 to-zinc-950 rounded-t-[3rem]" />
+
         {/* Patriotic Indian Footer - High Visibility Upgrade */}
-        <footer className="mt-32 relative rounded-[3rem] overflow-hidden border border-white/20 bg-zinc-950 shadow-2xl group">
+        <footer className="relative -mt-1 rounded-b-[3rem] overflow-hidden border border-white/20 bg-zinc-950 shadow-2xl group">
           {/* Tricolor Gradient Base - More Vibrant */}
           <div className="absolute inset-0 flex flex-col opacity-20">
             <div className="flex-1 bg-[#FF9933] blur-[100px]" />

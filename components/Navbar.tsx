@@ -17,7 +17,7 @@ export const Navbar: React.FC<NavbarProps> = ({ setAppState, isDarkMode, toggleD
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="pointer-events-auto glass-nav px-2 py-2 rounded-full flex items-center shadow-sm border border-white/40"
+        className="pointer-events-auto glass-nav px-2 py-2 rounded-full flex items-center shadow-sm border border-border"
       >
 
         {/* Divider */}

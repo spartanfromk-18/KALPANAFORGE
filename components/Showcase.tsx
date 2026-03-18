@@ -77,7 +77,7 @@ export const Showcase: React.FC = () => {
 
     return (
         <div ref={containerRef} className="min-h-[300vh] bg-black text-white selection:bg-primary selection:text-white">
-            {/* Floating Background Elements */}
+            {/* Floating Background Elements with Rotating Circles */}
             <div className="fixed inset-0 pointer-events-none z-0">
                 <motion.div
                     style={{ rotate }}

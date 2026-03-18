@@ -61,8 +61,8 @@ const App: React.FC = () => {
             <img src="/assets/kf_logo_v2.jpg" className="w-full h-full object-cover" alt="KalpanaForge Logo" width="40" height="40" decoding="async" />
           </div>
           <div className="flex flex-col leading-none">
-            <span className="text-sm font-black uppercase tracking-tighter text-white group-hover:text-primary transition-colors">Kalpana<span className="italic">Forge</span></span>
-            <span className="text-[7px] font-black text-zinc-500 tracking-[0.4em] uppercase">Elite Studio</span>
+            <span className="text-sm font-black uppercase tracking-tighter text-textPrimary group-hover:text-primary transition-colors">Kalpana<span className="italic">Forge</span></span>
+            <span className="text-[7px] font-black text-textSecondary tracking-[0.4em] uppercase">Elite Studio</span>
           </div>
         </div>
 
@@ -77,7 +77,7 @@ const App: React.FC = () => {
           {!currentUser ? (
             <button
               onClick={() => setIsAuthOpen(true)}
-              className="bg-white/5 backdrop-blur-xl border border-white/10 px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em] text-white hover:bg-primary hover:text-black transition-all hover:scale-110 shadow-2xl"
+              className="bg-surface/60 backdrop-blur-xl border border-border px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em] text-textPrimary hover:bg-primary hover:text-white transition-all hover:scale-110 shadow-lg"
             >
               Sign In
             </button>
@@ -177,7 +177,7 @@ const App: React.FC = () => {
           )}
         </main>
 
-        <Footer />
+        {appState !== AppState.LANDING && <Footer />}
       </div>
     </ErrorBoundary>
   );

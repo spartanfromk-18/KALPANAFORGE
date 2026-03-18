@@ -250,7 +250,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
                                         onClick={props.onMedicate}
                                         className="px-4 py-2 bg-white text-black text-[9px] font-black uppercase rounded-full hover:bg-primary hover:text-white transition-all shadow-lg active:scale-95"
                                     >
-                                        Apply Medication 💊
+                                        Apply Medication
                                     </button>
                                 </div>
                             </div>
