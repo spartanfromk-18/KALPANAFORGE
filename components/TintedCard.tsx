@@ -20,7 +20,7 @@ export const TintedCard: React.FC<TintedCardProps> = ({ backgroundImageUrl, chil
     <motion.div
       ref={ref}
       style={{ scale, opacity }}
-      className="group relative h-[400px] w-full overflow-hidden rounded-[2rem] bg-white shadow-xl transition-all hover:shadow-2xl hover:shadow-primary/10"
+      className="group relative h-[400px] w-full overflow-hidden rounded-[2rem] bg-white shadow-xl transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/20"
     >
       {/* Background Image with Parallax-ish feel */}
       <div

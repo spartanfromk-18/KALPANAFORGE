@@ -80,7 +80,7 @@ export const Navbar: React.FC<NavbarProps> = ({ setAppState, isDarkMode, toggleD
 
           <button
             onClick={() => setAppState(AppState.WORKFLOW_SELECTION)}
-            className="hidden sm:block px-8 py-3 bg-white text-black font-black text-[10px] uppercase tracking-widest rounded-full transition-all hover:bg-primary hover:text-white shadow-xl hover:shadow-primary/30 active:scale-95 whitespace-nowrap"
+            className="hidden sm:block px-8 py-3 bg-white text-black font-black text-[10px] uppercase tracking-widest rounded-full transition-all duration-300 hover:bg-primary hover:text-white shadow-lg hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 active:scale-[0.98] whitespace-nowrap"
           >
             Launch Studio
           </button>

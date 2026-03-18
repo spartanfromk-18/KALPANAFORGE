@@ -57,7 +57,7 @@ const App: React.FC = () => {
           onClick={() => setAppState(AppState.LANDING)}
           className="fixed top-6 left-8 z-[70] flex items-center gap-3 cursor-pointer group pointer-events-auto"
         >
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500 overflow-hidden">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center shadow-xl group-hover:shadow-primary/30 group-hover:-translate-y-0.5 transition-all duration-500 overflow-hidden">
             <img src="/assets/kf_logo_v2.jpg" className="w-full h-full object-cover" alt="KalpanaForge Logo" width="40" height="40" decoding="async" />
           </div>
           <div className="flex flex-col leading-none">
@@ -77,7 +77,7 @@ const App: React.FC = () => {
           {!currentUser ? (
             <button
               onClick={() => setIsAuthOpen(true)}
-              className="bg-surface/60 backdrop-blur-xl border border-border px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em] text-textPrimary hover:bg-primary hover:text-white transition-all hover:scale-110 shadow-lg"
+              className="bg-surface/60 backdrop-blur-xl border border-border px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em] text-textPrimary hover:bg-primary hover:text-white transition-all hover:-translate-y-0.5 hover:shadow-primary/30 hover:shadow-xl shadow-lg"
             >
               Sign In
             </button>
@@ -97,7 +97,7 @@ const App: React.FC = () => {
               </div>
               <img
                 src={currentUser.avatar}
-                className="w-10 h-10 rounded-full border-2 border-primary/20 shadow-lg hover:border-primary transition-all cursor-pointer hover:scale-105"
+                className="w-10 h-10 rounded-full border-2 border-primary/20 shadow-lg hover:ring-2 hover:ring-primary transition-all cursor-pointer hover:-translate-y-0.5 hover:shadow-primary/20"
                 alt={currentUser.username || 'User Avatar'}
                 width="40"
                 height="40"

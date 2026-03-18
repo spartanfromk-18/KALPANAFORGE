@@ -79,18 +79,16 @@ export const Landing: React.FC<LandingProps> = ({ setAppState }) => {
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <motion.button
-              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setAppState(AppState.WORKFLOW_SELECTION)}
-              className="w-full sm:w-auto px-10 py-5 bg-white text-black font-black uppercase tracking-[0.2em] rounded-full shadow-2xl hover:bg-primary hover:text-white transition-all duration-300"
+              className="w-full sm:w-auto px-10 py-5 bg-white text-black font-black uppercase tracking-[0.2em] rounded-full shadow-2xl hover:bg-primary hover:text-white transition-all duration-500 hover:-translate-y-1 hover:shadow-primary/30"
             >
               Start New Project
             </motion.button>
             <motion.button
-              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setAppState(AppState.GALLERY)}
-              className="w-full sm:w-auto px-10 py-5 bg-surface/60 backdrop-blur-xl border border-border text-textPrimary font-black uppercase tracking-[0.2em] rounded-full hover:bg-primary hover:text-white transition-all duration-300"
+              className="w-full sm:w-auto px-10 py-5 bg-surface/60 backdrop-blur-xl border border-border text-textPrimary font-black uppercase tracking-[0.2em] rounded-full hover:bg-primary hover:text-white transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-border/50"
             >
               View Gallery
             </motion.button>
@@ -236,17 +234,17 @@ export const Landing: React.FC<LandingProps> = ({ setAppState }) => {
               <div className="flex gap-10 text-[10px]">
                 <button
                   onClick={() => setAppState(AppState.PRIVACY)}
-                  className="text-white hover:text-primary transition-all hover:scale-110"
+                  className="text-white hover:text-primary transition-colors hover:-translate-y-0.5 duration-300"
                 >
                   Privacy
                 </button>
                 <button
                   onClick={() => setAppState(AppState.TERMS)}
-                  className="text-white hover:text-primary transition-all hover:scale-110"
+                  className="text-white hover:text-primary transition-colors hover:-translate-y-0.5 duration-300"
                 >
                   Terms
                 </button>
-                <a href="#" className="text-primary hover:text-white transition-all hover:scale-110 flex items-center gap-2">
+                <a href="#" className="text-primary hover:text-white transition-all hover:-translate-y-0.5 duration-300 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                   Twitter / X
                 </a>
