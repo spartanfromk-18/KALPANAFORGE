@@ -89,156 +89,90 @@ export const Gallery: React.FC<GalleryProps> = ({ onOpenAuth }) => {
 
 const PreLoginView: React.FC<{ onOpenAuth: () => void }> = ({ onOpenAuth }) => {
     return (
-        <div className="relative w-full min-h-screen bg-[#020617] overflow-hidden flex flex-col items-center justify-center pt-24 pb-16">
-            {/* BACKGROUND ANTARCTICA */}
-            <div className="absolute inset-0 z-0">
-                <img src="/assets/demo_mountains.png" className="w-full h-full object-cover opacity-40 blur-sm" alt="Antarctica" />
-                <div className="absolute inset-0 bg-gradient-to-b from-[#020617]/80 via-transparent to-[#020617]" />
-            </div>
-
-            {/* THE BIG MOUNTAIN IN FRONT */}
-            <motion.div
-                initial={{ y: 200, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 1.5, ease: "easeOut" }}
-                className="absolute bottom-[-10%] md:bottom-[-20%] left-1/2 -translate-x-1/2 w-full max-w-6xl z-20"
-            >
-                <div className="relative">
-                    <svg viewBox="0 0 1000 600" className="w-full h-auto fill-zinc-900 filter drop-shadow-[0_0_100px_rgba(34,211,238,0.2)]">
-                        <path d="M 0 600 L 200 400 L 400 500 L 600 200 L 800 450 L 1000 300 L 1000 600 Z" />
-                    </svg>
-
-                    {/* SO HIGH GOALS TEXT */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-full">
-                        <motion.h2
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            transition={{ delay: 1, duration: 2 }}
-                            className="text-5xl md:text-[8rem] font-black text-white/80 uppercase tracking-tighter drop-shadow-[0_0_80px_rgba(34,211,238,0.6)] text-shadow-glow px-6"
-                        >
-                            So High <span className="text-primary italic drop-shadow-[0_0_40px_rgba(34,211,238,0.8)]">GOALS</span>
-                        </motion.h2>
-                    </div>
-                </div>
-            </motion.div>
-
-            {/* THE SILLY FIGHT (Emotional & Clumsy) */}
-            <div className="relative z-30 flex items-center justify-center gap-12 scale-75 md:scale-100">
-                {/* ICE BEAR */}
-                <motion.div
-                    animate={{
-                        x: [0, 40, -20, 10, 0],
-                        y: [0, -30, 10, -10, 0],
-                        rotate: [0, 10, -15, 5, 0],
-                    }}
-                    transition={{
-                        duration: 5,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                    }}
-                    className="relative w-64 h-64"
+        <div className="relative w-full h-screen bg-[#020202] overflow-hidden font-display flex flex-col items-center justify-center selection:bg-white selection:text-black">
+            
+            {/* 3D Perspective Tunnel Layer */}
+            <div className="absolute inset-0 w-full h-full pointer-events-none" style={{ perspective: '800px' }}>
+                <motion.div 
+                    animate={{ rotateZ: [-1, 1, -1], scale: [1, 1.05, 1] }}
+                    transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
+                    className="w-full h-full relative" 
+                    style={{ transformStyle: 'preserve-3d' }}
                 >
-                    <svg viewBox="0 0 200 200" className="w-full h-full drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]">
-                        <motion.path
-                            animate={{ scale: [1, 1.1, 1] }}
-                            transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
-                            d="M100 80 Q120 70 140 85 Q160 100 155 120 Q150 140 130 145 L70 145 Q50 140 45 120 Q40 100 60 85 Q80 70 100 80"
-                            fill="white"
-                        />
-                        <circle cx="85" cy="100" r="3" fill="#1e293b" />
-                        <circle cx="115" cy="100" r="3" fill="#1e293b" />
-                        <motion.path
-                            animate={{ rotate: [0, 45, 0] }}
-                            d="M100 115 Q100 120 105 115"
-                            stroke="#1e293b" strokeWidth="2" fill="none"
-                        />
-                        <circle cx="75" cy="85" r="8" fill="white" />
-                        <circle cx="125" cy="85" r="8" fill="white" />
-                    </svg>
-                    <div className="absolute -top-4 -right-4 px-3 py-1 bg-white/10 backdrop-blur rounded-full border border-white/20">
-                        <p className="text-[8px] font-black text-white">ICE TANK</p>
-                    </div>
-                </motion.div>
-
-                <div className="text-4xl font-black text-primary italic drop-shadow-2xl animate-bounce">VS</div>
-
-                {/* SILLY PANDA */}
-                <motion.div
-                    animate={{
-                        x: [0, -50, 30, -10, 0],
-                        y: [0, 20, -40, 10, 0],
-                        rotate: [0, -20, 15, -5, 0],
-                    }}
-                    transition={{
-                        duration: 4.5,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: 0.2
-                    }}
-                    className="relative w-64 h-64"
-                >
-                    <svg viewBox="0 0 200 200" className="w-full h-full drop-shadow-[0_0_30px_rgba(0,0,0,0.4)]">
-                        {/* Body */}
-                        <motion.path
-                            animate={{ scale: [1, 1.05, 1] }}
-                            transition={{ duration: 0.6, repeat: Infinity, repeatType: "reverse" }}
-                            d="M100 80 Q120 70 140 85 Q160 100 155 120 Q150 140 130 145 L70 145 Q50 140 45 120 Q40 100 60 85 Q80 70 100 80"
-                            fill="#f8fafc"
-                        />
-                        {/* Panda Patterns */}
-                        <circle cx="70" cy="110" r="15" fill="#020617" />
-                        <circle cx="130" cy="110" r="15" fill="#020617" />
-                        <circle cx="75" cy="85" r="10" fill="#020617" />
-                        <circle cx="125" cy="85" r="10" fill="#020617" />
-                        {/* Eyes */}
-                        <circle cx="85" cy="100" r="4" fill="white" />
-                        <circle cx="115" cy="100" r="4" fill="white" />
-                        <circle cx="85" cy="100" r="2" fill="#020617" />
-                        <circle cx="115" cy="100" r="2" fill="#020617" />
-                        {/* Nose */}
-                        <path d="M100 110 L95 115 L105 115 Z" fill="#020617" />
-                    </svg>
-                    <div className="absolute -top-4 -left-4 px-3 py-1 bg-primary/20 backdrop-blur rounded-full border border-primary/30">
-                        <p className="text-[8px] font-black text-primary tracking-widest uppercase">Bamboo Warrior</p>
-                    </div>
-                </motion.div>
-            </div>
-
-            <div className="relative z-30 flex flex-col items-center -mt-12">
-
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 2.5 }}
-                    className="mt-12 text-center"
-                >
-                    <p className="text-zinc-500 font-bold uppercase tracking-[0.5em] text-[10px] mb-6">Restricted Access • Synchronize Identity</p>
-                    <button
-                        onClick={onOpenAuth}
-                        className="bg-white hover:bg-primary hover:text-white text-black px-12 py-5 rounded-full font-black uppercase tracking-[0.2em] transition-all hover:scale-110 active:scale-95 shadow-2xl shadow-primary/20"
+                    {/* Top Ceiling: KALPANA */}
+                    <div 
+                        className="absolute top-0 left-1/2 -translate-x-1/2 flex items-end justify-center w-[250vw] h-[100vh] origin-bottom text-[#6d28d9]"
+                        style={{ transform: 'rotateX(-75deg) translateZ(10vh)' }}
                     >
-                        Sign In To Open Vault
+                        <span className="text-[40vw] font-black tracking-tighter leading-[0.7] opacity-80 mix-blend-screen drop-shadow-2xl">KALPANA</span>
+                    </div>
+
+                    {/* Bottom Floor: FORGE */}
+                    <div 
+                        className="absolute bottom-0 left-1/2 -translate-x-1/2 flex items-start justify-center w-[250vw] h-[100vh] origin-top text-[#5b21b6]"
+                        style={{ transform: 'rotateX(75deg) translateZ(10vh)' }}
+                    >
+                        <span className="text-[40vw] font-black tracking-tighter leading-[0.7] opacity-80 mix-blend-screen drop-shadow-2xl">FORGE</span>
+                    </div>
+
+                    {/* Left Wall: YOUR VISION */}
+                    <div 
+                        className="absolute top-1/2 left-0 -translate-y-1/2 flex flex-col items-end justify-center w-[100vw] h-[300vh] origin-right text-[#7c3aed]"
+                        style={{ transform: 'rotateY(80deg) translateZ(20vw)' }}
+                    >
+                        <span className="text-[50vh] font-black tracking-widest leading-[0.75]">YOUR</span>
+                        <span className="text-[50vh] font-black tracking-widest leading-[0.75]">VISION</span>
+                    </div>
+
+                    {/* Right Wall: ELITE STUDIO */}
+                    <div 
+                        className="absolute top-1/2 right-0 -translate-y-1/2 flex flex-col items-start justify-center w-[100vw] h-[300vh] origin-left text-[#7c3aed]"
+                        style={{ transform: 'rotateY(-80deg) translateZ(20vw)' }}
+                    >
+                        <span className="text-[50vh] font-black tracking-widest leading-[0.75]">ELITE</span>
+                        <span className="text-[50vh] font-black tracking-widest leading-[0.75]">STUDIO</span>
+                    </div>
+                </motion.div>
+            </div>
+
+            {/* Dark Fuses / Gradients for legibility */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black pointer-events-none opacity-90" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-black/80 pointer-events-none opacity-70" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)] pointer-events-none opacity-80" />
+
+            {/* Stage / Center Content */}
+            <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl pt-12">
+                <motion.h2 
+                    initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                    className="text-white text-3xl md:text-5xl lg:text-[4rem] font-black uppercase tracking-tighter leading-[0.9] drop-shadow-2xl mb-12"
+                >
+                    THE CREATOR-FIRST <br/> 3D TYPOGRAPHY PLATFORM
+                </motion.h2>
+
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 1 }}
+                    className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto mt-4"
+                >
+                    <button 
+                        onClick={onOpenAuth} 
+                        className="px-12 py-5 bg-white text-black text-xs font-black uppercase tracking-[0.2em] rounded-full hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] transition-all duration-500"
+                    >
+                        Sign in to Vault
+                    </button>
+                    <button 
+                        className="px-12 py-5 bg-black/50 backdrop-blur-md border border-white/20 text-white text-xs font-black uppercase tracking-[0.2em] rounded-full hover:bg-white/10 hover:border-white/50 hover:-translate-y-1 shadow-lg transition-all duration-500"
+                    >
+                        Developer API
                     </button>
                 </motion.div>
             </div>
-
-            {/* Emotional Particles */}
-            {[...Array(20)].map((_, i) => (
-                <motion.div
-                    key={i}
-                    className="absolute w-1 h-1 bg-white rounded-full opacity-20"
-                    animate={{
-                        y: [-20, 1000],
-                        x: [Math.random() * 2000, Math.random() * 2000],
-                        opacity: [0, 0.5, 0]
-                    }}
-                    transition={{
-                        duration: Math.random() * 10 + 10,
-                        repeat: Infinity,
-                        delay: Math.random() * 20
-                    }}
-                />
-            ))}
+            
+            {/* Texture */}
+            <div className="absolute inset-0 canvas-grid opacity-20 pointer-events-none mix-blend-overlay" />
         </div>
     );
 };
