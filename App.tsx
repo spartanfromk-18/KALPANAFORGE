@@ -1,6 +1,6 @@
-/**
- * Production Core Layout Orchestrator
- * Eliminates layout thrashing and enforces optimized runtime state management.
+ /**
+ * Production View Routing Tree Matrix
+ * Prevents unnecessary re-renders and preserves inner UI state cache.
  */
 
 import React, { useState, Suspense, lazy, useMemo, useCallback } from 'react';
@@ -19,7 +19,7 @@ import { AppState } from './types';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Footer } from './components/Footer';
 
-// Optimize module resolution layers with explicit lazy dynamic mapping targets
+// Dynamic lazy loads for splitting high-weight module builds
 const Editor = lazy(() => import('./components/Editor').then(m => ({ default: m.Editor })));
 const Gallery = lazy(() => import('./components/Gallery').then(m => ({ default: m.Gallery })));
 
@@ -30,7 +30,7 @@ export const App: React.FC = () => {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
 
-  // Memoize state change operations to eliminate unexpected re-render sweeps
+  // Stable callback strategies to enforce pure performance metrics
   const handleOpenAuth = useCallback(() => setIsAuthOpen(true), []);
   const handleCloseWelcome = useCallback(() => setShowWelcome(false), []);
   
@@ -41,7 +41,8 @@ export const App: React.FC = () => {
 
   const handleViewGallery = useCallback(() => setAppState(AppState.GALLERY), []);
 
-  const viewLayer = useMemo(() => {
+  // Compute view layer state allocations systematically
+  const activeViewLayer = useMemo(() => {
     switch (appState) {
       case AppState.LANDING:
         return <Landing onStartWorkflow={() => setAppState(AppState.WORKFLOW_SELECTION)} />;
@@ -77,7 +78,7 @@ export const App: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen flex flex-col bg-background text-text-primary selection:bg-primary/20 transition-colors duration-300">
+      <div className="min-h-screen flex flex-col bg-background text-text-primary transition-colors duration-300">
         <Navbar 
           currentUser={currentUser} 
           onOpenAuth={handleOpenAuth} 
@@ -87,24 +88,28 @@ export const App: React.FC = () => {
 
         <main className="flex-grow relative z-10">
           <Suspense fallback={
-            <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center z-50">
-              <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-              <p className="text-primary font-mono tracking-widest text-xs animate-pulse">SYNCHRONIZING CORE SUB-SYSTEMS...</p>
+            <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center z-50">
+              <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin mb-2" />
+              <p className="text-primary font-mono tracking-wider text-xs opacity-80">LOADING STRUCTURAL COMPONENT...</p>
             </div>
           }>
-            {viewLayer}
+            {activeViewLayer}
           </Suspense>
         </main>
 
         {appState !== AppState.LANDING && <Footer />}
 
         {showWelcome && <WelcomeScreen onClose={handleCloseWelcome} />}
-        {isAuthOpen && <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} onAuthSuccess={(user) => setCurrentUser(user)} />}
+        {isAuthOpen && (
+          <AuthModal 
+            isOpen={isAuthOpen} 
+            onClose={() => setIsAuthOpen(false)} 
+            onAuthSuccess={(user) => setCurrentUser(user)} 
+          />
+        )}
       </div>
     </ErrorBoundary>
   );
 };
 
-export default App; 
-
- 
+export default App;
