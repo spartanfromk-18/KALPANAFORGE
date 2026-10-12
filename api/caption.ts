@@ -1,33 +1,26 @@
 import { GoogleGenAI } from "@google/genai";
 import { scanForThreats } from "../services/mrx/core";
+import { corsHeaders, jsonError, originAllowed, readJsonBody } from './_security';
 
 export const config = {
     runtime: 'edge',
 };
 
 // CORS headers for cross-origin requests
-const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Content-Type': 'application/json',
-};
-
 export default async function handler(req: Request) {
+    const headers = corsHeaders(req);
+    if (!originAllowed(req)) return jsonError(403, 'Origin not allowed', headers);
     // Handle CORS preflight
     if (req.method === 'OPTIONS') {
-        return new Response(null, { status: 204, headers: corsHeaders });
+        return new Response(null, { status: 204, headers });
     }
 
     if (req.method !== 'POST') {
-        return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-            status: 405,
-            headers: corsHeaders
-        });
+        return jsonError(405, 'Method not allowed', headers);
     }
 
     try {
-        const body = await req.json();
+        const body = await readJsonBody<{ imageContext?: unknown }>(req, 32 * 1024);
 
         // --- MR. X SECURITY LAYER (Layer 3) ---
         const scanResult = scanForThreats(body);
@@ -37,7 +30,7 @@ export default async function handler(req: Request) {
                 threats: scanResult.threats
             }), {
                 status: 403,
-                headers: corsHeaders
+                headers
             });
         }
 
@@ -47,14 +40,14 @@ export default async function handler(req: Request) {
         if (!imageContext || typeof imageContext !== 'string') {
             return new Response(JSON.stringify({ error: 'Invalid or missing imageContext' }), {
                 status: 400,
-                headers: corsHeaders
+                headers
             });
         }
 
         if (imageContext.length > 1000) {
             return new Response(JSON.stringify({ error: 'imageContext too long. Max 1000 characters.' }), {
                 status: 400,
-                headers: corsHeaders
+                headers
             });
         }
 
@@ -63,7 +56,7 @@ export default async function handler(req: Request) {
             console.error("Server Error: Missing GEMINI_API_KEY environment variable");
             return new Response(JSON.stringify({ error: 'Server configuration error. Please contact support.' }), {
                 status: 500,
-                headers: corsHeaders
+                headers
             });
         }
 
@@ -106,14 +99,14 @@ export default async function handler(req: Request) {
 
         return new Response(JSON.stringify({ captions }), {
             status: 200,
-            headers: corsHeaders
+            headers
         });
 
     } catch (error) {
         console.error("Gemini Caption Error:", error);
         return new Response(JSON.stringify({ error: 'Failed to generate captions. Please try again.' }), {
             status: 500,
-            headers: corsHeaders
+            headers
         });
     }
 }
