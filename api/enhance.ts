@@ -1,6 +1,8 @@
 import { GoogleGenAI, Modality } from "@google/genai";
 import { scanForThreats } from "../services/mrx/core";
 import { corsHeaders, jsonError, originAllowed, readJsonBody } from './_security';
+import { validateBearerToken } from '../services/server/auth';
+import { limitUser } from '../services/server/rateLimit';
 
 export const config = {
     runtime: 'edge',
@@ -23,6 +25,10 @@ export default async function handler(req: Request) {
     if (req.method !== 'POST') {
         return jsonError(405, 'Method not allowed', headers);
     }
+
+    const user = await validateBearerToken(req);
+    if (!user) return jsonError(401, 'Authentication required', headers);
+    if (!await limitUser(user.id)) return jsonError(429, 'Too many requests. Please slow down.', headers);
 
     try {
         const body = await readJsonBody<{ base64Image?: unknown; type?: unknown; promptModifier?: unknown }>(req, MAX_IMAGE_SIZE + 1024);

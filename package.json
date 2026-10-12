@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@google/genai": "^0.2.0",
+    "@supabase/supabase-js": "^2.117.3",
     "@upstash/ratelimit": "^2.0.8",
     "@vercel/edge": "^1.2.2",
     "@vercel/functions": "^2.0.0",

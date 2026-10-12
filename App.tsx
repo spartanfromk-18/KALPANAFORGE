@@ -3,7 +3,7 @@
  * Prevents unnecessary re-renders and preserves inner UI state cache.
  */
 
-import React, { useState, Suspense, lazy, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, Suspense, lazy, useMemo, useCallback } from 'react';
 import { Navbar } from './components/Navbar';
 import { AuthModal } from './components/AuthModal';
 import { WelcomeScreen } from './components/WelcomeScreen';
@@ -29,6 +29,8 @@ export const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(() => authService.getCurrentUser());
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
+
+  useEffect(() => authService.onChange(setCurrentUser), []);
 
   // Stable callback strategies to enforce pure performance metrics
   const handleOpenAuth = useCallback(() => setIsAuthOpen(true), []);
