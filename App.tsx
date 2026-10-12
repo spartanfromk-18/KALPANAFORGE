@@ -45,12 +45,13 @@ export const App: React.FC = () => {
   const activeViewLayer = useMemo(() => {
     switch (appState) {
       case AppState.LANDING:
-        return <Landing onStartWorkflow={() => setAppState(AppState.WORKFLOW_SELECTION)} />;
+        return <Landing setAppState={setAppState} />;
       case AppState.WORKFLOW_SELECTION:
         return (
-          <WorkflowSelection 
-            onSelectWorkflow={(assets) => {
-              setSelectedAssets(assets);
+          <WorkflowSelection
+            onBack={() => setAppState(AppState.LANDING)}
+            onSelectImage={(image, mask) => {
+              setSelectedAssets({ image, mask });
               setAppState(AppState.EDITOR);
             }} 
           />
@@ -72,7 +73,7 @@ export const App: React.FC = () => {
       case AppState.TERMS: return <Terms />;
       case AppState.SHOWCASE: return <Showcase />;
       default:
-        return <Landing onStartWorkflow={() => setAppState(AppState.WORKFLOW_SELECTION)} />;
+        return <Landing setAppState={setAppState} />;
     }
   }, [appState, selectedAssets, handleOpenAuth, handleReturnToHub, handleViewGallery]);
 
@@ -80,10 +81,9 @@ export const App: React.FC = () => {
     <ErrorBoundary>
       <div className="min-h-screen flex flex-col bg-background text-text-primary transition-colors duration-300">
         <Navbar 
-          currentUser={currentUser} 
-          onOpenAuth={handleOpenAuth} 
-          onNavigate={(state) => setAppState(state)}
-          currentTransientState={appState}
+          setAppState={setAppState}
+          isDarkMode={false}
+          toggleDarkMode={() => undefined}
         />
 
         <main className="flex-grow relative z-10">
@@ -99,12 +99,12 @@ export const App: React.FC = () => {
 
         {appState !== AppState.LANDING && <Footer />}
 
-        {showWelcome && <WelcomeScreen onClose={handleCloseWelcome} />}
+        {showWelcome && <WelcomeScreen username={currentUser?.username || 'Creator'} onComplete={handleCloseWelcome} />}
         {isAuthOpen && (
           <AuthModal 
             isOpen={isAuthOpen} 
             onClose={() => setIsAuthOpen(false)} 
-            onAuthSuccess={(user) => setCurrentUser(user)} 
+            onSuccess={(user) => setCurrentUser(user)}
           />
         )}
       </div>
