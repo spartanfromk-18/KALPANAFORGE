@@ -23,7 +23,14 @@ export default async function handler(req: Request) {
 
     const user = await validateBearerToken(req);
     if (!user) return jsonError(401, 'Authentication required', headers);
-    if (!await limitUser(user.id)) return jsonError(429, 'Too many requests. Please slow down.', headers);
+    const userLimit = await limitUser(user.id);
+    if (userLimit === 'unavailable') {
+        return jsonError(503, 'Service temporarily unavailable. Please try again.', {
+            ...headers,
+            'Retry-After': '60',
+        });
+    }
+    if (userLimit === 'limited') return jsonError(429, 'Too many requests. Please slow down.', headers);
 
     try {
         const body = await readJsonBody<{ imageContext?: unknown }>(req, 32 * 1024);
