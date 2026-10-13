@@ -50,11 +50,10 @@ const THREAT_PATTERNS = {
         /\/\*.*\*\//g,
     ],
     commandInjection: [
-        /[;&|`$(){}[\]]/g,
         /\$\(.*\)/g,
         /`.*`/g,
-        /\|\|/g,
-        /&&/g,
+        /(?:^|[;|&])\s*(?:rm|cat|ls|wget|curl|chmod|chown|sudo)\b/gi,
+        /(?:&&|\|\|)\s*(?:rm|cat|ls|wget|curl|chmod|chown|sudo)\b/gi,
         /\n\s*(rm|cat|ls|wget|curl|chmod|chown|sudo)/gi,
     ],
     pathTraversal: [
@@ -62,9 +61,10 @@ const THREAT_PATTERNS = {
         /\.\.%2[fF]/g,
         /\.\.%5[cC]/g,
         /%2e%2e[\/\\]/gi,
+        /%2e%2e%2f/gi,
     ],
     ldapInjection: [
-        /[*()\\|\&]/g,
+        /\(\s*[&|!~]?[a-zA-Z][\w-]*\s*=[^)]*\)/g,
         /\x00/g,
     ],
     noSqlInjection: [
@@ -79,6 +79,7 @@ const THREAT_PATTERNS = {
         /__proto__/gi,
         /constructor\s*\[/gi,
         /prototype\s*\[/gi,
+        /constructor\s*['"]?\s*:\s*\{[^}]*prototype/gi,
     ],
     templateInjection: [
         /\{\{.*\}\}/g,

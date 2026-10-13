@@ -1,4 +1,4 @@
- {
+{
   "name": "kalpana-forge",
   "private": true,
   "version": "1.0.0",
@@ -8,15 +8,16 @@
     "build": "tsc --project tsconfig.build.json && vite build",
     "preview": "vite preview",
     "test:security": "ts-node-esm services/mrx/tests/mrx-security.test.ts",
-    "verify": "npm run test:security && echo '\\n✅ All security tests passed!'"
+    "verify": "tsx services/mrx/tests/mrx-security.test.ts && tsx services/mrx/tests/api.test.ts"
   },
   "dependencies": {
     "@google/genai": "^0.2.0",
+    "@supabase/supabase-js": "^2.117.3",
     "@upstash/ratelimit": "^2.0.8",
     "@vercel/edge": "^1.2.2",
+    "@vercel/functions": "^2.0.0",
     "@vercel/kv": "^3.0.0",
     "framer-motion": "^11.0.0",
-    "next": "^14.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -26,7 +27,13 @@
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.19",
-    "typescript": "^5.x.x",
-    "vite": "^5.x.x"
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.11"
+  },
+  "overrides": {
+    "uuid": "^11.1.1",
+    "ws": "^8.21.0"
   }
 }

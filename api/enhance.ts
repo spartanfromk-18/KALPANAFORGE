@@ -1,5 +1,8 @@
 import { GoogleGenAI, Modality } from "@google/genai";
 import { scanForThreats } from "../services/mrx/core";
+import { corsHeaders, jsonError, originAllowed, readJsonBody } from './_security';
+import { validateBearerToken } from '../services/server/auth';
+import { limitUser } from '../services/server/rateLimit';
 
 export const config = {
     runtime: 'edge',
@@ -8,31 +11,34 @@ export const config = {
 };
 
 // CORS headers for cross-origin requests
-const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Content-Type': 'application/json',
-};
-
 // Maximum allowed image size (10MB in base64 characters - roughly 7.5MB actual)
 const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
 
 export default async function handler(req: Request) {
+    const headers = corsHeaders(req);
+    if (!originAllowed(req)) return jsonError(403, 'Origin not allowed', headers);
     // Handle CORS preflight
     if (req.method === 'OPTIONS') {
-        return new Response(null, { status: 204, headers: corsHeaders });
+        return new Response(null, { status: 204, headers });
     }
 
     if (req.method !== 'POST') {
-        return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-            status: 405,
-            headers: corsHeaders
-        });
+        return jsonError(405, 'Method not allowed', headers);
     }
 
+    const user = await validateBearerToken(req);
+    if (!user) return jsonError(401, 'Authentication required', headers);
+    const userLimit = await limitUser(user.id);
+    if (userLimit === 'unavailable') {
+        return jsonError(503, 'Service temporarily unavailable. Please try again.', {
+            ...headers,
+            'Retry-After': '60',
+        });
+    }
+    if (userLimit === 'limited') return jsonError(429, 'Too many requests. Please slow down.', headers);
+
     try {
-        const body = await req.json();
+        const body = await readJsonBody<{ base64Image?: unknown; type?: unknown; promptModifier?: unknown }>(req, MAX_IMAGE_SIZE + 1024);
 
         // --- MR. X SECURITY LAYER (Layer 3) ---
         const scanResult = scanForThreats(body);
@@ -42,39 +48,38 @@ export default async function handler(req: Request) {
                 threats: scanResult.threats
             }), {
                 status: 403,
-                headers: corsHeaders
+                headers
             });
         }
-
         const { base64Image, type, promptModifier } = body;
 
         // --- ROBUST VALIDATION (Server-Side) ---
         if (!base64Image || typeof base64Image !== 'string') {
             return new Response(JSON.stringify({ error: 'Invalid or missing image data' }), {
                 status: 400,
-                headers: corsHeaders
+                headers
             });
         }
 
         if (base64Image.length > MAX_IMAGE_SIZE) {
             return new Response(JSON.stringify({ error: `Image payload too large (${(base64Image.length / 1024 / 1024).toFixed(1)}MB). Max 10MB.` }), {
                 status: 400,
-                headers: corsHeaders
+                headers
             });
         }
 
         const validTypes = ['CRISP', 'MASK', 'FACE_SWAP', 'CREATIVE'];
-        if (!type || !validTypes.includes(type)) {
+        if (typeof type !== 'string' || !validTypes.includes(type)) {
             return new Response(JSON.stringify({ error: 'Missing or invalid enhancement type' }), {
                 status: 400,
-                headers: corsHeaders
+                headers
             });
         }
 
-        if (promptModifier && (typeof promptModifier !== 'string' || promptModifier.length > 500)) {
+        if (promptModifier !== undefined && (typeof promptModifier !== 'string' || promptModifier.length > 500)) {
             return new Response(JSON.stringify({ error: 'Invalid prompt modifier (too long or wrong type)' }), {
                 status: 400,
-                headers: corsHeaders
+                headers
             });
         }
 
@@ -89,14 +94,14 @@ export default async function handler(req: Request) {
             console.error("Server Error: Missing GEMINI_API_KEY environment variable");
             return new Response(JSON.stringify({ error: 'Server configuration error. Please contact support.' }), {
                 status: 500,
-                headers: corsHeaders
+                headers
             });
         }
         if (aiProvider === 'openai' && !openaiKey) {
             console.error("Server Error: Missing OPENAI_API_KEY environment variable");
             return new Response(JSON.stringify({ error: 'Server configuration error. Please contact support.' }), {
                 status: 500,
-                headers: corsHeaders
+                headers
             });
         }
 
@@ -142,7 +147,7 @@ export default async function handler(req: Request) {
                 console.error('OpenAI API Error:', errText);
                 return new Response(JSON.stringify({ error: 'AI processing failed. Check your API configuration.' }), {
                     status: 500,
-                    headers: corsHeaders
+                    headers
                 });
             }
 
@@ -157,7 +162,7 @@ export default async function handler(req: Request) {
                 aiAdvice: textResponse // Include AI analysis
             }), {
                 status: 200,
-                headers: corsHeaders
+                headers
             });
         }
 
@@ -187,13 +192,13 @@ export default async function handler(req: Request) {
             const resultImage = `data:image/png;base64,${part.inlineData.data}`;
             return new Response(JSON.stringify({ image: resultImage }), {
                 status: 200,
-                headers: corsHeaders
+                headers
             });
         }
 
         return new Response(JSON.stringify({ error: 'No image generated. Please try again.' }), {
             status: 500,
-            headers: corsHeaders
+            headers
         });
 
     } catch (error) {
@@ -205,13 +210,16 @@ export default async function handler(req: Request) {
         if (errorMessage.includes('quota') || errorMessage.includes('rate')) {
             return new Response(JSON.stringify({ error: 'API rate limit reached. Please try again later.' }), {
                 status: 429,
-                headers: corsHeaders
+                headers
             });
         }
 
+        if (error instanceof Error && error.message === 'PAYLOAD_TOO_LARGE') {
+            return jsonError(413, 'Request body too large', headers);
+        }
         return new Response(JSON.stringify({ error: 'Failed to process image. Please try again.' }), {
             status: 500,
-            headers: corsHeaders
+            headers
         });
     }
 }

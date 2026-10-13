@@ -1,4 +1,4 @@
-import { mrxService } from './mrx';
+import { createClient, type Session, type User as SupabaseUser } from '@supabase/supabase-js';
 
 export interface User {
     id: string;
@@ -8,117 +8,77 @@ export interface User {
     createdAt: number;
 }
 
-// Secure in-memory session store (closure-based, not accessible via devtools)
-const createSecureSessionStore = () => {
-    let sessionToken: string | null = null;
-    let sessionUser: User | null = null;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+if (!supabaseUrl || !supabaseAnonKey) console.error('[auth] VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are required');
+
+export const supabase = createClient(supabaseUrl || 'https://invalid.supabase.co', supabaseAnonKey || 'missing-anon-key');
+let currentUser: User | null = null;
+
+const clearLegacySession = () => {
+    if (typeof localStorage === 'undefined') return;
+    localStorage.removeItem('kf_s_v4_p');
+    localStorage.removeItem('kf_u_v4_d');
+};
+
+const mapUser = (user: SupabaseUser | null): User | null => {
+    if (!user?.email) return null;
     return {
-        setSession: (user: User) => {
-            // High-entropy session token
-            sessionToken = crypto.getRandomValues ?
-                Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b => b.toString(16).padStart(2, '0')).join('') :
-                Math.random().toString(36).substr(2) + Date.now().toString(36);
-            sessionUser = user;
-        },
-        getSession: () => ({ token: sessionToken, user: sessionUser }),
-        clearSession: () => {
-            sessionToken = null;
-            sessionUser = null;
-        },
-        isAuthenticated: () => sessionToken !== null
+        id: user.id,
+        email: user.email,
+        username: String(user.user_metadata?.username || user.email.split('@')[0]),
+        avatar: user.user_metadata?.avatar,
+        createdAt: new Date(user.created_at).getTime(),
     };
 };
 
-const secureSession = createSecureSessionStore();
+const applySession = (session: Session | null) => { currentUser = mapUser(session?.user || null); };
 
-// Obfuscated keys to slow down basic automated scraping
-const AUTH_KEY = 'kf_s_v4_p';
-const USERS_DB_KEY = 'kf_u_v4_d';
+clearLegacySession();
+void supabase.auth.getSession().then(({ data }) => applySession(data.session));
+supabase.auth.onAuthStateChange((_event, session) => applySession(session));
 
 export const authService = {
-    // Basic Auth Operations
     signUp: async (email: string, password: string, username: string): Promise<User> => {
-        // Mock delay to prevent brute-force
-        await new Promise(r => setTimeout(r, 1200));
-
-        const usersData = localStorage.getItem(USERS_DB_KEY);
-        const users = usersData ? JSON.parse(atob(usersData)) : []; // Basic encoding to hide from plain view
-
-        if (users.find((u: any) => u.email === email)) {
-            throw new Error('Email already registered');
-        }
-
-        const newUser: User = {
-            id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2, 9),
+        const { data, error } = await supabase.auth.signUp({
             email,
-            username,
-            avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`,
-            createdAt: Date.now()
-        };
-
-        users.push({ ...newUser, password }); // Note: In production, hash passwords server-side
-        localStorage.setItem(USERS_DB_KEY, btoa(JSON.stringify(users)));
-
-        // PERSISTENCE: Only store essential ID for restoration, not full object if possible
-        // But for this client-only app, we'll obscure the full object
-        localStorage.setItem(AUTH_KEY, btoa(JSON.stringify(newUser)));
-        secureSession.setSession(newUser);
-
-        mrxService.saveLog({
-            timestamp: Date.now(),
-            event: 'USER_SIGNED_UP',
-            type: 'SECURITY',
-            severity: 'LOW',
-            message: `New User: ${username}`,
-            metadata: { username }
+            password,
+            options: { data: { username, avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(username)}` } },
         });
-
-        return newUser;
+        if (error) throw new Error(error.message);
+        const user = mapUser(data.user);
+        if (!user) throw new Error('Unable to create account');
+        currentUser = user;
+        return user;
     },
 
     signIn: async (email: string, password: string): Promise<User> => {
-        await new Promise(r => setTimeout(r, 1000));
-
-        const usersData = localStorage.getItem(USERS_DB_KEY);
-        const users = usersData ? JSON.parse(atob(usersData)) : [];
-        const user = users.find((u: any) => u.email === email && u.password === password);
-
-        if (!user) {
-            throw new Error('Invalid email or password');
-        }
-
-        const { password: _, ...userData } = user;
-        localStorage.setItem(AUTH_KEY, btoa(JSON.stringify(userData)));
-        secureSession.setSession(userData);
-        return userData;
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw new Error(error.message);
+        const user = mapUser(data.user);
+        if (!user) throw new Error('Unable to sign in');
+        currentUser = user;
+        return user;
     },
 
-    signOut: () => {
-        localStorage.removeItem(AUTH_KEY);
-        secureSession.clearSession();
+    signOut: async (): Promise<void> => {
+        const { error } = await supabase.auth.signOut();
+        if (error) throw new Error(error.message);
+        currentUser = null;
     },
 
-    getCurrentUser: (): User | null => {
-        // 1. PRIMARY: Check secure in-memory session (XSS-safe)
-        const { user: sessionUser } = secureSession.getSession();
-        if (sessionUser) return sessionUser;
+    getCurrentUser: (): User | null => currentUser,
 
-        // 2. FALLBACK: Page refresh persistence (Obscured)
-        const data = localStorage.getItem(AUTH_KEY);
-        if (data) {
-            try {
-                const user = JSON.parse(atob(data));
-                secureSession.setSession(user);
-                return user;
-            } catch (e) {
-                localStorage.removeItem(AUTH_KEY);
-                return null;
-            }
-        }
-        return null;
+    getAccessToken: async (): Promise<string | null> => {
+        const { data } = await supabase.auth.getSession();
+        return data.session?.access_token || null;
     },
 
-    // Expose secure session check for sensitive operations
-    isSecurelyAuthenticated: (): boolean => secureSession.isAuthenticated()
+    onChange: (callback: (user: User | null) => void) => {
+        const { data } = supabase.auth.onAuthStateChange((_event, session) => callback(mapUser(session?.user || null)));
+        return () => data.subscription.unsubscribe();
+    },
+
+    isSecurelyAuthenticated: (): boolean => currentUser !== null,
 };
