@@ -7,17 +7,19 @@ Your application is a **Vite + React** app with serverless API functions, optimi
 1. **GitHub Account**: Push your code to a GitHub repository
 2. **Vercel Account**: Sign up at [vercel.com](https://vercel.com) (you can login with GitHub)
 3. **Gemini API Key**: Get one from [Google AI Studio](https://aistudio.google.com/apikey)
+4. **Supabase project**: Enable Email Auth and choose whether email confirmation is required (the client assumes it is enabled).
+5. **Upstash Redis database**: Create a REST database and copy its URL and token.
 
 > ⚠️ **IMPORTANT**: Never commit your actual API key to GitHub. The `.env.local` file is gitignored for security.
 
 ---
 
 ## Step 1: Prepare Your Code
-npm
 ### Verify Build Locally
 ```bash
-npm install
+npm ci
 npm run build
+npm run verify
 ```
 
 The build should complete without errors. You should see output like:
@@ -72,7 +74,16 @@ Vercel should auto-detect these, but verify:
 
 | Key | Value |
 |-----|-------|
-| `GEMINI_API_KEY` | Your API key from Google AI Studio |
+| `GEMINI_API_KEY` | Server-only key from Google AI Studio |
+| `AI_PROVIDER` | `gemini` (or `openai`) |
+| `AI_MODEL` | Gemini or OpenAI-compatible model name |
+| `OPENAI_API_KEY` | Optional; required only when `AI_PROVIDER=openai` |
+| `OPENAI_API_BASE` | Optional; defaults to `https://api.openai.com/v1` |
+| `ALLOWED_ORIGIN` | Comma-separated production origin allowlist, for example `https://app.example.com` |
+| `KV_REST_API_URL` | Upstash Redis REST URL |
+| `KV_REST_API_TOKEN` | Upstash Redis REST token |
+| `VITE_SUPABASE_URL` | Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | Supabase publishable/anon key |
 
 3. Click **"Deploy"**
 
@@ -102,35 +113,18 @@ Once deployed, Vercel will provide a URL like `https://kalpana-forge.vercel.app`
 
 ---
 
-## Advanced Production Security: MR. X Edge
+## Supabase and Upstash setup
 
-For professional-grade security in production, you can enable the **MRX Global Sentinel (Edge Middleware)**. This layer monitors every request for threats (XSS, SQLi, etc.) before they reach your code.
+In Supabase, create the project, enable Email Auth, and configure the site URL and allowed redirect URLs for the Vercel domain. The browser uses Supabase Auth; API routes validate the Supabase access token server-side. Do not expose a service-role key.
 
-### Setup Instructions
+In Upstash, create a Redis database and add its REST URL and token to Vercel. The Vercel Edge middleware rate-limits API requests by IP, and the API handlers apply a second limit by authenticated user. Missing KV credentials fail safe with a log and do not crash requests.
 
-1. **Create Root Middleware**: In your project root, create a file named `middleware.ts`.
-2. **Add Security Logic**: Paste the following configuration to activate the MRX Sentinel:
+### Deploy steps
 
-```typescript
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { scanForThreats, quickThreatCheck } from './services/mrx/core';
-
-export const config = {
-  matcher: ['/api/:path*'], // Secure all API routes
-};
-
-export async function middleware(request: NextRequest) {
-    // 1. Check Rate Limits & IP Reputation
-    // 2. Scan Request Body for Payload Threats
-    // 3. Inject Security Hardening Headers
-    const response = NextResponse.next();
-    response.headers.set('X-MRX-Protected', 'true');
-    return response;
-}
-```
-
-This ensures your commercial launch is protected by the full MR. X v3.0 logic without impacting local development performance.
+1. Import the repository into Vercel with the `Vite` preset.
+2. Set the variables above for Production, Preview, and Development as appropriate.
+3. Deploy with `npm run build` and verify the deployed app, sign-up, email-confirmed login, and both AI routes.
+4. Set `ALLOWED_ORIGIN` to the exact HTTPS frontend origin before production traffic.
 
 ---
 

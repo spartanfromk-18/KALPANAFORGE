@@ -4,6 +4,7 @@
  */
 
 import { scanForThreats, sanitize, sanitizeObject, quickThreatCheck } from '../core';
+import { pathToFileURL } from 'node:url';
 
 // ANSI color codes for terminal output
 const colors = {
@@ -350,7 +351,7 @@ async function runTests() {
 }
 
 // Run tests if this is the main module
-if (require.main === module) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   runTests().then(success => {
     process.exit(success ? 0 : 1);
   });

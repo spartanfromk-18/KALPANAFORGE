@@ -1,6 +1,6 @@
 import { Ratelimit } from '@upstash/ratelimit';
 import { kv } from '@vercel/kv';
-import { ipAddress, next } from '@vercel/functions';
+import { ipAddress, next } from '@vercel/edge';
 
 export const config = { matcher: ['/api/:path*'] };
 

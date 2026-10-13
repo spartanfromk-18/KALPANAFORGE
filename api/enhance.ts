@@ -44,7 +44,6 @@ export default async function handler(req: Request) {
                 headers
             });
         }
-
         const { base64Image, type, promptModifier } = body;
 
         // --- ROBUST VALIDATION (Server-Side) ---
@@ -208,6 +207,9 @@ export default async function handler(req: Request) {
             });
         }
 
+        if (error instanceof Error && error.message === 'PAYLOAD_TOO_LARGE') {
+            return jsonError(413, 'Request body too large', headers);
+        }
         return new Response(JSON.stringify({ error: 'Failed to process image. Please try again.' }), {
             status: 500,
             headers

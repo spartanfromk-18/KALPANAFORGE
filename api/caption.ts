@@ -39,7 +39,6 @@ export default async function handler(req: Request) {
                 headers
             });
         }
-
         const { imageContext } = body;
 
         // --- ROBUST VALIDATION (Server-Side) ---
@@ -110,6 +109,9 @@ export default async function handler(req: Request) {
 
     } catch (error) {
         console.error("Gemini Caption Error:", error);
+        if (error instanceof Error && error.message === 'PAYLOAD_TOO_LARGE') {
+            return jsonError(413, 'Request body too large', headers);
+        }
         return new Response(JSON.stringify({ error: 'Failed to generate captions. Please try again.' }), {
             status: 500,
             headers
